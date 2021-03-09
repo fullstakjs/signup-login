@@ -6,7 +6,7 @@ const jwt=require('jsonwebtoken');
 
 const user_route=express.Router();
 
-
+//signup
 user_route.post("/signup",async(req,res)=>{
 
     const errors=[];
@@ -66,6 +66,9 @@ user_route.post("/login",async(req,res)=>{
     }
 
     const user=await User.findOne({email:email})
+    const mypass=await bcrypt.compare(password, user.password)
+
+    console.log(mypass)
     
     const userForToken = {
         username: user.userName,
@@ -75,6 +78,7 @@ user_route.post("/login",async(req,res)=>{
 
     const token = jwt.sign(userForToken, process.env.SECRET)
     console.log(token);
+    res.send({ token, userName: user.userName, email: user.email })
     
 })
 
